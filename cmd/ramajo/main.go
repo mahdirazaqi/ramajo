@@ -2,9 +2,10 @@ package main
 
 import (
 	"flag"
-	"log"
 
 	"github.com/mahdirazaqi/ramajo/config"
+	"github.com/mahdirazaqi/ramajo/internal/server"
+	"github.com/mahdirazaqi/ramajo/pkg/logger"
 )
 
 var configPath = flag.String("c", "./config.json", "config file path")
@@ -12,8 +13,12 @@ var configPath = flag.String("c", "./config.json", "config file path")
 func main() {
 	flag.Parse()
 
-	_, err := config.Load(*configPath)
+	c, err := config.Load(*configPath)
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err)
+	}
+
+	if err := server.Start(c.Port); err != nil {
+		logger.Error(err)
 	}
 }
